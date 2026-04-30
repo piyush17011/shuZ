@@ -1,6 +1,7 @@
 backend/node_modules/
 backend/notes.txt
 backend/.env
+backend/context.md
 frontend/node_modules/
 frontend/.env.local
 frontend/.env

@@ -7,27 +7,39 @@ import axios from 'axios';
 function SignUp() {
   const navigate = useNavigate();
   const [user, setUser] = useState({ username: "", email: "", password: "" });
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   function handleInput(e) {
+    setError("");
     setUser({ ...user, [e.target.name]: e.target.value });
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     e.stopPropagation();
+
+    if (user.username.trim().length < 3) {
+      return setError("Username must be at least 3 characters");
+    }
+    if (user.password.length < 6) {
+      return setError("Password must be at least 6 characters");
+    }
+
+    setLoading(true);
+    setError("");
+
     try {
-      const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/users/register`, user);
-      if (response.data.message === "Exists") {
-        alert("Already Exists");
-        setUser({ username: "", email: "", password: "" });
-      } else {
-        setUser({ username: "", email: "", password: "" });
-        alert("Account Created");
-        navigate("/login");
-      }
+      await axios.post(`${process.env.REACT_APP_API_URL}/api/users/register`, user);
+      navigate("/login", { state: { message: "Account created! Please log in." } });
     } catch (err) {
-      if (!err?.response) { alert('No Server Response'); }
-      else { alert('Registration Failed'); }
+      if (!err?.response) {
+        setError("Cannot connect to server. Please try again.");
+      } else {
+        setError(err.response.data?.message || "Registration failed. Please try again.");
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -37,6 +49,12 @@ function SignUp() {
         <p className="auth-page-label">new here</p>
         <h1 className="signup-text">create account</h1>
         <p className="auth-sub">sign up to start shopping</p>
+
+        {error && (
+          <div className="auth-error">
+            {error}
+          </div>
+        )}
 
         <form onSubmit={handleSubmit}>
           <div className="username-field">
@@ -75,7 +93,9 @@ function SignUp() {
               className="form-control"
             />
           </div>
-          <button type="submit" className="signup-button">register</button>
+          <button type="submit" className="signup-button" disabled={loading}>
+            {loading ? "creating account..." : "register"}
+          </button>
         </form>
 
         <p className="bottom-login-text">
