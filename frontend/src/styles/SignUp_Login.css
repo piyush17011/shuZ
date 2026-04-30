@@ -11,6 +11,16 @@
   justify-content: center;
   padding: 6rem 1.5rem 4rem;
 }
+.auth-error {
+  background: rgba(187, 3, 3, 0.08);
+  border: 1px solid rgba(255, 80, 80, 0.25);
+  color: #ff6b6b;
+  font-size: 0.82rem;
+  border-radius: 0.6rem;
+  padding: 0.7rem 1rem;
+  margin-bottom: 1rem;
+  font-family: 'Readex Pro', sans-serif;
+}
 
 .auth-success {
   background: rgba(80, 200, 120, 0.08);
