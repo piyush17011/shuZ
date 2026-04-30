@@ -1,7 +1,7 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/SignUp_Login.css';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 
 function SignUp() {
@@ -100,7 +100,7 @@ function SignUp() {
 
         <p className="bottom-login-text">
           already have an account?{' '}
-          <a onClick={() => navigate('/login')}>log in</a>
+          <Link to="/login">log in</Link>
         </p>
       </div>
     </div>

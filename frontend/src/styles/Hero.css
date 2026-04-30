@@ -192,9 +192,16 @@
 
   .hero-explore-btn {
     bottom: 1.25rem;
-    padding: 0.8rem 2rem;
+    left: 1.5rem;
+    right: 1.5rem;
+    width: auto;
+    padding: 0.85rem 1.5rem;
     font-size: 0.68rem;
-    width: calc(100% - 4rem);       /* nearly full width on tiny screens */
     text-align: center;
+    white-space: normal;
+    transform: none;
+  }
+  .hero-explore-btn:hover {
+    transform: scale(1.03);
   }
 }
