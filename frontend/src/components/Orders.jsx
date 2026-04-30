@@ -20,7 +20,7 @@ const Orders = () => {
       try {
         if (!userId) return;
         const response = await axios.get(
-          `https://sshoplify.onrender.com/api/orders/userorder/${userId}`
+          `${process.env.REACT_APP_API_URL}/api/orders/userorder/${userId}`
         );
         setOrders(response.data);
       } catch (error) {}

@@ -18,7 +18,7 @@ const NavBar = () => {
     if (!userId) { setCartCount(0); return; }
     const fetchCart = async () => {
       try {
-        const res = await fetch(`https://sshoplify.onrender.com/api/cart/${userId}`);
+        const res = await fetch(`${process.env.REACT_APP_API_URL}/api/cart/${userId}`);
         const data = await res.json();
         setCartCount(data?.items?.length || 0);
       } catch (err) {}

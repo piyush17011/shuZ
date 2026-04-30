@@ -13,7 +13,7 @@ const FetchedTSCards = ({ category }) => {
     const fetchdata = async () => {
       try {
         const response = await axios.get(
-          `https://sshoplify.onrender.com/api/products/get/${category}`
+          `${process.env.REACT_APP_API_URL}/api/products/get/${category}`
         );
         setProducts(response.data);
       } catch (error) {}

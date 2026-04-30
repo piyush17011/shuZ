@@ -16,7 +16,7 @@ function SignUp() {
     e.preventDefault();
     e.stopPropagation();
     try {
-      const response = await axios.post('https://sshoplify.onrender.com/api/users/register', user);
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/users/register`, user);
       if (response.data.message === "Exists") {
         alert("Already Exists");
         setUser({ username: "", email: "", password: "" });

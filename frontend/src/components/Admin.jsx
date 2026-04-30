@@ -49,7 +49,7 @@ function Admin(){
     try{
   
       const response = await  axios.post(
-        'https://sshoplify.onrender.com/api/products/add',product );
+        `${process.env.REACT_APP_API_URL}/api/products/add`,product );
       console.log(response); 
         setProduct({title : "",imageURL : "",price:"",category:"",details:"",});
         alert("Product Added ")
@@ -66,7 +66,7 @@ function Admin(){
       // useEffect(() => {
       //   const fetchdata = async () => {
       //     try {
-      //       const { data } = await axios.get("https://sshoplify.onrender.com/api/users/allUser");
+      //       const { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/users/allUser");
       //       console.log(data)
       //       setUsers(data);
       //     } catch (error) {

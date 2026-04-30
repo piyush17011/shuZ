@@ -16,7 +16,7 @@ export default function Cart() {
 
   const fetchCart = useCallback(async () => {
     try {
-      const res = await axios.get(`https://sshoplify.onrender.com/api/cart/${userId}`);
+      const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/cart/${userId}`);
       setCart(res.data);
     } catch (err) {
     } finally {
@@ -31,14 +31,14 @@ export default function Cart() {
   const handleQuantityChange = async (productId, quantity) => {
     if (quantity < 1) return;
     try {
-      await axios.put(`https://sshoplify.onrender.com/api/cart/update`, { userId, productId, quantity });
+      await axios.put(`${process.env.REACT_APP_API_URL}/api/cart/update`, { userId, productId, quantity });
       fetchCart();
     } catch (err) {}
   };
 
   const handleRemove = async (productId) => {
     try {
-      await axios.delete(`https://sshoplify.onrender.com/api/cart/remove`, { data: { userId, productId } });
+      await axios.delete(`${process.env.REACT_APP_API_URL}/api/cart/remove`, { data: { userId, productId } });
       fetchCart();
     } catch (err) {}
   };
@@ -56,7 +56,7 @@ export default function Cart() {
       }, 0);
       if (!userId) { alert("User not logged in"); return; }
 
-      const { data } = await axios.post("https://sshoplify.onrender.com/api/payment/create-order", { amount });
+      const { data } = await axios.post(`${process.env.REACT_APP_API_URL}/api/payment/create-order`, { amount });
 
       const options = {
         key: data.key,
@@ -67,14 +67,14 @@ export default function Cart() {
         order_id: data.orderId,
         handler: async function () {
           try {
-            const res = await axios.post("https://sshoplify.onrender.com/api/orders/addorder", { userId, orderItems, amount });
+            const res = await axios.post(`${process.env.REACT_APP_API_URL}/api/orders/addorder`, { userId, orderItems, amount });
             try {
-              await axios.delete("https://sshoplify.onrender.com/api/cart/clear", { data: { userId } });
+              await axios.delete(`${process.env.REACT_APP_API_URL}/api/cart/clear`, { data: { userId } });
             } catch (clearErr) {
               if (cart?.items?.length) {
                 await Promise.all(
                   cart.items.map((item) =>
-                    axios.delete("https://sshoplify.onrender.com/api/cart/remove", { data: { userId, productId: item.productId._id } })
+                    axios.delete(`${process.env.REACT_APP_API_URL}/api/cart/remove`, { data: { userId, productId: item.productId._id } })
                   )
                 );
               }

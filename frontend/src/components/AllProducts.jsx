@@ -14,7 +14,7 @@ const AllProducts = () => {
   useEffect(() => {
     const fetchdata = async () => {
       try {
-        const { data } = await axios.get("https://sshoplify.onrender.com/api/products/get");
+        const { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/products/get`);
         setProducts(data);
       } catch (error) {}
     };

@@ -20,7 +20,7 @@ const SingleProductPage = () => {
       return;
     }
     try {
-      await axios.post("https://sshoplify.onrender.com/api/cart/add", {
+      await axios.post(`${process.env.REACT_APP_API_URL}/api/cart/add`, {
         userId,
         productId: productToAdd._id,
         quantity: 1,
@@ -34,7 +34,7 @@ const SingleProductPage = () => {
   useEffect(() => {
     const fetchdata = async () => {
       const response = await axios.get(
-        `https://sshoplify.onrender.com/api/products/get/single/${id}`
+        `${process.env.REACT_APP_API_URL}/api/products/get/single/${id}`
       );
       setProduct(response.data);
     };

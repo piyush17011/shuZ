@@ -18,7 +18,7 @@ function LogIn() {
     e.preventDefault();
     dispatch({ type: "LOGIN_START" });
     try {
-      const response = await axios.post('https://sshoplify.onrender.com/api/users/login', user);
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/users/login`, user);
       const loginPayload = response.data?.data?.user ?? response.data?.user ?? response.data?.data ?? response.data;
       dispatch({ type: "LOGIN_SUCCESS", payload: loginPayload });
       navigate("/");

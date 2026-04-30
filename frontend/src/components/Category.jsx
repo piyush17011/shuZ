@@ -15,7 +15,7 @@ const Category = ({ category }) => {
     const fetchData = async () => {
       try {
         const { data } = await axios.get(
-          `https://sshoplify.onrender.com/api/products/get/${category}`
+          `${process.env.REACT_APP_API_URL}/api/products/get/${category}`
         );
         setProducts(data);
       } catch (error) {}

@@ -7,10 +7,12 @@ const Footer = () => {
   return (
     <footer className="footer">
       <div style={{ textAlign: 'center' }}>
-        <h5>ShüZ</h5>
+        <h5>ShüZ - By Piyush</h5>
         <p>
           your go-to store for the latest trends in shoes for men, women, and kids.
-          crafted for every stride — bold, light, and built to last.
+          crafted for every stride — bold, light, and built to last.   
+
+          Github : https://github.com/piyush17011
         </p>
         <div style={{ display: 'flex', gap: '2rem', justifyContent: 'center', marginBottom: '1rem' }}>
           <span
