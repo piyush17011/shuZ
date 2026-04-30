@@ -14,14 +14,13 @@
 .auth-error {
   background: rgba(187, 3, 3, 0.08);
   border: 1px solid rgba(255, 80, 80, 0.25);
-  color: #ff6b6b;
+  color: #ff4444;   /* ← change this */
   font-size: 0.82rem;
   border-radius: 0.6rem;
   padding: 0.7rem 1rem;
   margin-bottom: 1rem;
   font-family: 'Readex Pro', sans-serif;
 }
-
 .auth-success {
   background: rgba(80, 200, 120, 0.08);
   border: 1px solid rgba(80, 200, 120, 0.25);
