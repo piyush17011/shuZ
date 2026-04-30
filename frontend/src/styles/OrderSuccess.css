@@ -1,0 +1,148 @@
+/* ══════════════════════════════════════
+   ORDER SUCCESS  —  Securify theme
+══════════════════════════════════════ */
+
+.order-success-container {
+  background: #000;
+  min-height: calc(100vh - 5rem);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 1.5rem;
+}
+
+.order-success-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 1.5rem;
+  padding: 3rem 2.5rem;
+  max-width: 480px;
+  width: 100%;
+  text-align: center;
+  box-shadow: none;
+}
+
+.order-success-card::after { display: none; }
+
+.order-success-icon {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin: 0 auto 2rem;
+  box-shadow: none;
+}
+
+.order-success-label {
+  font-size: 0.62rem;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.3);
+  margin-bottom: 0.75rem;
+}
+
+.order-success-card h2 {
+  font-family: 'Readex Pro', sans-serif;
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 500;
+  letter-spacing: -0.04em;
+  color: #fff;
+  margin-bottom: 0.75rem;
+  line-height: 0.95;
+}
+
+.order-success-subtitle {
+  color: rgba(255,255,255,0.4);
+  font-size: 0.88rem;
+  line-height: 1.7;
+  margin-bottom: 2rem;
+}
+
+.order-success-meta {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 1rem;
+  padding: 1.3rem 1.5rem;
+  text-align: left;
+  margin-bottom: 1.5rem;
+}
+
+.order-success-meta p {
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.6);
+  margin: 0;
+  padding: 0.55rem 0;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.order-success-meta p:last-child { border-bottom: none; }
+
+.order-success-meta strong {
+  color: rgba(255,255,255,0.35);
+  font-weight: 400;
+  font-size: 0.72rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.order-success-hint {
+  color: rgba(255,255,255,0.3);
+  font-size: 0.82rem;
+  line-height: 1.65;
+  margin-bottom: 2rem;
+}
+
+.order-success-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.order-success-actions button {
+  font-family: 'Readex Pro', sans-serif !important;
+  font-size: 0.82rem !important;
+  font-weight: 500 !important;
+  border: none !important;
+  border-radius: 0.6rem !important;
+  padding: 0.8rem 1.8rem !important;
+  cursor: pointer;
+  transition: background 0.2s !important;
+  background: #fff !important;
+  color: #000 !important;
+  box-shadow: none !important;
+}
+
+.order-success-actions button:hover {
+  background: #e5e5e5 !important;
+  transform: none !important;
+}
+
+.order-success-actions button.secondary {
+  background: transparent !important;
+  color: rgba(255,255,255,0.6) !important;
+  border: 1px solid rgba(255,255,255,0.12) !important;
+  box-shadow: none !important;
+}
+
+.order-success-actions button.secondary:hover {
+  border-color: rgba(255,255,255,0.35) !important;
+  color: #fff !important;
+  background: transparent !important;
+}
+
+@media (max-width: 480px) {
+  .order-success-card { padding: 2rem 1.5rem; }
+  .order-success-actions { flex-direction: column; }
+  .order-success-actions button { width: 100%; }
+}

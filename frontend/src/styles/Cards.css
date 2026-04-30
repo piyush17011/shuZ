@@ -1,0 +1,109 @@
+/* ══════════════════════════════════════
+   CARDS (Categories)  —  Securify theme
+══════════════════════════════════════ */
+
+.cards-section {
+  background: #000;
+  padding: 6rem 2.5rem 5rem;
+}
+
+.cards-section-label {
+  font-size: 0.62rem;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.3);
+  text-align: center;
+  margin-bottom: 0.75rem;
+}
+
+.cards-section-heading {
+  font-family: 'Readex Pro', sans-serif;
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  font-weight: 500;
+  letter-spacing: -0.04em;
+  line-height: 0.95;
+  color: #fff;
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.home-cards-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.home-card {
+  background: rgba(255,255,255,0.04) !important;
+  border: 1px solid rgba(255,255,255,0.08) !important;
+  border-radius: 1.25rem !important;
+  overflow: hidden;
+  transition: border-color 0.3s, background 0.3s !important;
+  cursor: pointer;
+}
+
+.home-card:hover {
+  background: rgba(255,255,255,0.07) !important;
+  border-color: rgba(255,255,255,0.18) !important;
+}
+
+.home-card-img {
+  width: 100%;
+  aspect-ratio: 4/3;
+  object-fit: cover;
+  display: block;
+  filter: brightness(0.7);
+  transition: filter 0.4s;
+}
+
+.home-card:hover .home-card-img {
+  filter: brightness(0.85);
+}
+
+.home-card-body {
+  padding: 1.4rem !important;
+  background: transparent !important;
+}
+
+.home-card-title {
+  font-family: 'Readex Pro', sans-serif !important;
+  font-size: 1.1rem !important;
+  font-weight: 600 !important;
+  color: #fff !important;
+  letter-spacing: -0.01em;
+  margin-bottom: 0.5rem !important;
+}
+
+.home-card-text {
+  font-size: 0.82rem !important;
+  color: rgba(255,255,255,0.45) !important;
+  line-height: 1.65 !important;
+  margin-bottom: 1.1rem !important;
+}
+
+.home-card-body .btn {
+  font-family: 'Readex Pro', sans-serif !important;
+  font-size: 0.72rem !important;
+  font-weight: 500 !important;
+  background: #fff !important;
+  color: #000 !important;
+  border: none !important;
+  border-radius: 9999px !important;
+  padding: 0.5rem 1.3rem !important;
+  letter-spacing: 0.02em;
+  transition: background 0.2s !important;
+}
+
+.home-card-body .btn:hover {
+  background: #e5e5e5 !important;
+  color: #000 !important;
+}
+
+@media (max-width: 768px) {
+  .home-cards-container {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+}

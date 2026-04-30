@@ -1,0 +1,157 @@
+/* ══════════════════════════════════════
+   SIGNUP / LOGIN  —  Securify theme
+══════════════════════════════════════ */
+
+.sign-up,
+.login-page {
+  background: #000;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6rem 1.5rem 4rem;
+}
+
+.auth-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 1.5rem;
+  padding: 2.8rem;
+  width: 100%;
+  max-width: 420px;
+}
+
+.auth-page-label {
+  font-size: 0.62rem;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.3);
+  margin-bottom: 0.75rem;
+}
+
+.login-text,
+.signup-text {
+  font-family: 'Readex Pro', sans-serif;
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  font-weight: 500;
+  letter-spacing: -0.04em;
+  line-height: 0.95;
+  color: #fff;
+  margin-bottom: 0.5rem;
+  text-align: left !important;
+}
+
+.auth-sub {
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.35);
+  margin-bottom: 2rem;
+}
+
+/* floating label override */
+.form-floating > .form-control,
+.username-field .form-control,
+.email-field .form-control,
+.pass-field .form-control {
+  background: rgba(255,255,255,0.05) !important;
+  border: 1px solid rgba(255,255,255,0.1) !important;
+  border-radius: 0.75rem !important;
+  color: #fff !important;
+  font-family: 'Readex Pro', sans-serif !important;
+  font-size: 0.9rem !important;
+  padding: 0.85rem 1.1rem !important;
+  transition: border-color 0.2s !important;
+  box-shadow: none !important;
+}
+
+.form-floating > .form-control:focus,
+.username-field .form-control:focus,
+.email-field .form-control:focus,
+.pass-field .form-control:focus {
+  border-color: rgba(255,255,255,0.4) !important;
+  background: rgba(255,255,255,0.07) !important;
+  box-shadow: none !important;
+  color: #fff !important;
+}
+
+.form-floating > .form-control::placeholder,
+.username-field .form-control::placeholder,
+.email-field .form-control::placeholder,
+.pass-field .form-control::placeholder {
+  color: rgba(255,255,255,0.25) !important;
+}
+
+.form-floating > label {
+  color: rgba(255,255,255,0.35) !important;
+  font-size: 0.82rem !important;
+}
+
+.username-field,
+.email-field,
+.pass-field {
+  width: 100% !important;
+  margin: 0 0 0.75rem !important;
+}
+
+/* submit button */
+.signup-button,
+.login-button {
+  font-family: 'Readex Pro', sans-serif !important;
+  font-size: 0.85rem !important;
+  font-weight: 500 !important;
+  background: #fff !important;
+  color: #000 !important;
+  border: none !important;
+  border-radius: 0.6rem !important;
+  padding: 0.85rem 2rem !important;
+  width: 100% !important;
+  height: auto !important;
+  margin: 0.75rem 0 !important;
+  transition: background 0.2s !important;
+  cursor: pointer;
+  letter-spacing: 0.01em;
+  display: block !important;
+}
+
+.signup-button:hover,
+.login-button:hover {
+  background: #e5e5e5 !important;
+  color: #000 !important;
+}
+
+/* bottom link */
+.bottom-login-text {
+  text-align: center;
+  font-size: 0.78rem;
+  color: rgba(255,255,255,0.3);
+  margin-top: 1.25rem;
+  font-family: 'Readex Pro', sans-serif;
+}
+
+.bottom-login-text a {
+  color: rgba(255,255,255,0.65) !important;
+  text-decoration: underline !important;
+  text-underline-offset: 3px !important;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.bottom-login-text a:hover { color: #fff !important; }
+
+/* admin page */
+.admin {
+  background: #000;
+  min-height: 100vh;
+  padding: 6rem 1.5rem 4rem;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.admin h1 {
+  font-family: 'Readex Pro', sans-serif;
+  font-size: 2.5rem;
+  font-weight: 500;
+  letter-spacing: -0.04em;
+  color: #fff;
+  margin-bottom: 2.5rem;
+  text-align: center;
+}

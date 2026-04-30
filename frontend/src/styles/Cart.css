@@ -1,0 +1,232 @@
+/* ══════════════════════════════════════
+   CART  —  Securify theme
+══════════════════════════════════════ */
+
+.cart-page {
+  background: #000;
+  min-height: 100vh;
+  padding-top: 5.5rem;
+  padding-bottom: 4rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.cart-inner {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 2rem 2rem;
+  width: 100%;
+  margin-bottom: 1.5rem;
+}
+
+.cart-label {
+  font-size: 0.62rem;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.3);
+  margin-bottom: 0.5rem;
+}
+
+.cart-heading {
+  font-family: 'Readex Pro', sans-serif !important;
+  font-size: clamp(2.5rem, 5vw, 3.5rem) !important;
+  font-weight: 500 !important;
+  letter-spacing: -0.04em !important;
+  line-height: 0.95 !important;
+  color: #fff !important;
+  margin-bottom: 2.5rem !important;
+  text-align: left !important;
+}
+
+.cart-wrapper {
+  max-width: 700px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+/* each cart item card */
+.cart-card {
+  background: rgba(255,255,255,0.04) !important;
+  border: 1px solid rgba(255,255,255,0.08) !important;
+  border-radius: 1rem !important;
+  overflow: hidden !important;
+  margin-bottom: 0.75rem !important;
+  transition: all 0.3s ease !important;
+  animation: slideIn 0.4s ease-out;
+}
+
+.cart-card:hover {
+  border-color: rgba(255,255,255,0.15) !important;
+  background: rgba(255,255,255,0.06) !important;
+  transform: translateX(4px);
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(-10px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.cart-item-row {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 1.1rem !important;
+  gap: 1rem;
+}
+
+.cart-item-left {
+  display: flex !important;
+  align-items: center !important;
+  gap: 1rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.cart-img {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  background: rgba(255,255,255,0.08);
+  border-radius: 1rem;
+  border: 1px solid rgba(255,255,255,0.1);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.04);
+  flex-shrink: 0;
+  padding: 8px;
+}
+
+.cart-item-details {
+  min-width: 0;
+}
+
+.cart-title {
+  font-family: 'Readex Pro', sans-serif !important;
+  font-size: 0.88rem !important;
+  font-weight: 600 !important;
+  color: #fff !important;
+  margin-bottom: 0.2rem !important;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cart-price {
+  font-size: 0.8rem !important;
+  color: rgba(255,255,255,0.45) !important;
+}
+
+.cart-item-right {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.6rem;
+  flex-shrink: 0;
+}
+
+.quantity-btn {
+  width: 30px !important;
+  height: 30px !important;
+  border-radius: 50% !important;
+  border: 1px solid rgba(255,255,255,0.15) !important;
+  background: transparent !important;
+  color: #fff !important;
+  font-size: 1rem !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 !important;
+  transition: background 0.2s !important;
+  line-height: 1;
+}
+
+.quantity-btn:hover {
+  background: rgba(255,255,255,0.1) !important;
+  border-color: rgba(255,255,255,0.3) !important;
+}
+
+.remove-btn {
+  font-family: 'Readex Pro', sans-serif !important;
+  font-size: 0.7rem !important;
+  font-weight: 400 !important;
+  background: transparent !important;
+  border: 1px solid rgba(255,255,255,0.1) !important;
+  color: rgba(255,255,255,0.4) !important;
+  border-radius: 9999px !important;
+  padding: 0.3rem 0.9rem !important;
+  transition: all 0.2s !important;
+}
+
+.remove-btn:hover {
+  border-color: rgba(255,255,255,0.4) !important;
+  color: #fff !important;
+  background: transparent !important;
+}
+
+/* total card */
+.total-card {
+  background: rgba(255,255,255,0.04) !important;
+  border: 1px solid rgba(255,255,255,0.1) !important;
+  border-radius: 1rem !important;
+  margin-top: 0.75rem !important;
+  padding: 1.4rem !important;
+}
+
+.cart-total-row {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+}
+
+.cart-total-row h4 {
+  font-family: 'Readex Pro', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  color: #fff;
+  margin: 0;
+}
+
+.placeorder-button {
+  font-family: 'Readex Pro', sans-serif !important;
+  font-size: 0.85rem !important;
+  font-weight: 500 !important;
+  background: #fff !important;
+  color: #000 !important;
+  border: none !important;
+  border-radius: 0.6rem !important;
+  padding: 0.8rem 2rem !important;
+  transition: background 0.2s !important;
+}
+
+.placeorder-button:hover {
+  background: #e5e5e5 !important;
+  color: #000 !important;
+}
+
+@media (max-width: 768px) {
+  .cart-page { padding-top: 4.5rem; padding-bottom: 3rem; }
+  .cart-inner { padding: 1.5rem 1.5rem; }
+  .cart-wrapper { padding: 0; }
+  .cart-img { width: 56px; height: 56px; }
+  .cart-item-row { padding: 0.9rem !important; }
+  .cart-title { font-size: 0.8rem !important; }
+}
+
+@media (max-width: 480px) {
+  .cart-page { padding-top: 4rem; }
+  .cart-inner { padding: 1rem 1rem; }
+  .cart-heading { font-size: 2rem !important; margin-bottom: 1.5rem !important; }
+  .cart-img { width: 48px; height: 48px; padding: 6px; }
+  .cart-item-row { padding: 0.75rem !important; gap: 0.75rem; }
+  .cart-item-left { gap: 0.75rem; }
+  .quantity-btn { width: 28px !important; height: 28px !important; font-size: 0.9rem !important; }
+  .cart-title { font-size: 0.75rem !important; }
+  .cart-price { font-size: 0.7rem !important; }
+  .remove-btn { padding: 0.25rem 0.7rem !important; font-size: 0.65rem !important; }
+}
+
+@media (max-width: 600px) {
+  .cart-wrapper, .cart-inner { padding: 0 1rem; }
+  .cart-item-row { flex-wrap: wrap; }
+  .cart-item-right { margin-left: auto; }
+}

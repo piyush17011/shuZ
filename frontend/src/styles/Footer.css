@@ -1,0 +1,36 @@
+/* ══════════════════════════════════════
+   FOOTER  —  Securify theme
+══════════════════════════════════════ */
+
+.footer {
+  background: #000 !important;
+  border-top: 1px solid rgba(255,255,255,0.07) !important;
+  padding: 2.5rem 2.5rem !important;
+  margin-top: 0 !important;
+}
+
+.footer h5 {
+  font-family: 'Readex Pro', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.4);
+  margin-bottom: 0.75rem;
+}
+
+.footer p {
+  font-size: 0.82rem;
+  color: rgba(255,255,255,0.35);
+  line-height: 1.65;
+  max-width: 520px;
+  margin: 0 auto 1.5rem;
+  text-align: center;
+}
+
+.footer-copy {
+  font-size: 0.75rem !important;
+  color: rgba(255,255,255,0.25) !important;
+  letter-spacing: 0.05em;
+  margin: 0 !important;
+}

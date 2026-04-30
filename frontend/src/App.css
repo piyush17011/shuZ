@@ -1,0 +1,18 @@
+/* ══════════════════════════════════════
+   App.css — add these rules
+══════════════════════════════════════ */
+
+.app {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  /* ❌ do NOT add: transform / filter / will-change / perspective */
+}
+
+.content {
+  position: relative;
+  z-index: 2;      /* must be ABOVE canvas z-index: 1 */
+  width: 100%;
+  min-height: 100vh;
+  /* ❌ do NOT add: transform / filter / will-change / perspective */
+}
