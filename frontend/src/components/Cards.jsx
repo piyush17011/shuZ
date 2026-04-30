@@ -16,7 +16,7 @@ const Cards = () => {
 
         {/* MEN */}
         <Card className="home-card" onClick={() => navigate('/men')}>
-          <img className="home-card-img" src="../images/men2.jpg" alt="Men" />
+          <img className="home-card-img" src="/images/men2.jpg" alt="Men" />
           <Card.Body className="home-card-body">
             <Card.Title className="home-card-title">men</Card.Title>
             <Card.Text className="home-card-text">
@@ -28,7 +28,7 @@ const Cards = () => {
 
         {/* WOMEN */}
         <Card className="home-card" onClick={() => navigate('/women')}>
-          <img className="home-card-img" src="../images/women.png" alt="Women" />
+          <img className="home-card-img" src="/images/women.png" alt="Women" />
           <Card.Body className="home-card-body">
             <Card.Title className="home-card-title">women</Card.Title>
             <Card.Text className="home-card-text">
@@ -40,7 +40,7 @@ const Cards = () => {
 
         {/* KIDS */}
         <Card className="home-card" onClick={() => navigate('/kids')}>
-          <img className="home-card-img" src="../images/kids.png" alt="Kids" />
+          <img className="home-card-img" src="/images/kids.png" alt="Kids" />
           <Card.Body className="home-card-body">
             <Card.Title className="home-card-title">kids</Card.Title>
             <Card.Text className="home-card-text">

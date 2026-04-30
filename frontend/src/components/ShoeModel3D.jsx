@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import '../styles/ShoeModel3D.css';
 
 let cachedShoeGLTF = null;
@@ -7,6 +7,7 @@ let cachedShoePromise = null;
 const ShoeModel3D = () => {
   const containerRef = useRef(null);
   const initialisedRef = useRef(false);
+  const [loading, setLoading] = useState(true);  // ← add this
 
   useEffect(() => {
     const container = containerRef.current;
@@ -30,12 +31,10 @@ const ShoeModel3D = () => {
           import('three/examples/jsm/libs/meshopt_decoder.module.js'),
         ]);
 
-        // Use container size — it's the hero-model-slot
         const getW = () => container.clientWidth  || 400;
         const getH = () => container.clientHeight || 400;
 
         scene = new THREE.Scene();
-
         renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         renderer.setSize(getW(), getH());
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -61,7 +60,6 @@ const ShoeModel3D = () => {
         controls.target.set(0, 0, 0);
         controls.update();
 
-        // Strong lighting so dark models are visible on dark bg
         scene.add(new THREE.AmbientLight(0xffffff, 3));
         const key = new THREE.DirectionalLight(0xffffff, 4);
         key.position.set(3, 5, 5);
@@ -78,19 +76,16 @@ const ShoeModel3D = () => {
 
         const setupModel = (gltf) => {
           scene.children.filter(c => c.isGroup).forEach(c => scene.remove(c));
-
           const group  = new THREE.Group();
           const cloned = gltf.scene.clone(true);
           cloned.scale.set(0.75, 0.75, 0.75);
           group.add(cloned);
           scene.add(group);
           group.updateMatrixWorld(true);
-
           const box    = new THREE.Box3().setFromObject(group);
           const centre = new THREE.Vector3();
           box.getCenter(centre);
           cloned.position.set(-centre.x, -centre.y, -centre.z);
-
           cloned.traverse((c) => {
             if (c.isMesh && c.material) {
               const mats = Array.isArray(c.material) ? c.material : [c.material];
@@ -101,6 +96,7 @@ const ShoeModel3D = () => {
               });
             }
           });
+          setLoading(false);  // ← hide loader once model is ready
         };
 
         const loader = new GLTFLoader();
@@ -120,7 +116,6 @@ const ShoeModel3D = () => {
           camera.updateProjectionMatrix();
           renderer.setSize(getW(), getH());
         };
-        // Use ResizeObserver so we react to container size changes, not just window
         const ro = new ResizeObserver(handleResize);
         ro.observe(container);
 
@@ -139,10 +134,9 @@ const ShoeModel3D = () => {
           if (container.contains(renderer.domElement)) container.removeChild(renderer.domElement);
           initialisedRef.current = false;
         };
-
       } catch (err) {
-        console.error('[3D] Fatal:', err);
         initialisedRef.current = false;
+        setLoading(false);
       }
     };
 
@@ -150,7 +144,16 @@ const ShoeModel3D = () => {
     return () => { if (cleanupFn) cleanupFn(); };
   }, []);
 
-  return <div className="shoe-model-container" ref={containerRef} />;
+  return (
+    <div className="shoe-model-container" ref={containerRef}>
+      {loading && (
+        <div className="shoe-model-loader">
+          <div className="shoe-model-spinner" />
+          <p>loading model...</p>
+        </div>
+      )}
+    </div>
+  );
 };
 
 export default ShoeModel3D;
