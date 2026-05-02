@@ -4,15 +4,15 @@ const statsSchema = new mongoose.Schema(
   {
     happyCustomers: {
       type: String,
-      default: '+12k',
+      default: '+20',
     },
     pairsShipped: {
       type: String,
-      default: '+80k',
+      default: '+72',
     },
     stylesAvailable: {
       type: String,
-      default: '+500',
+      default: '+25',
     },
   },
   { timestamps: true }
