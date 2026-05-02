@@ -152,7 +152,7 @@ export default function Admin() {
               <button className="adm-btn-primary" onClick={openAddProduct}>+ add product</button>
             </div>
             <div className="adm-table-wrap">
-              <table className="adm-table">
+              <table className="adm-table products-table">
                 <thead>
                   <tr>
                     <th>image</th>
@@ -171,7 +171,7 @@ export default function Admin() {
                       <td><span className="adm-badge">{p.category}</span></td>
                       <td>
                         {p.ts
-                          ? <span className="adm-badge admin">✓ ts</span>
+                          ? <span className="adm-badge ts">✓ ts</span>
                           : <span className="adm-muted" style={{ fontSize: '0.75rem' }}>—</span>}
                       </td>
                       <td>₹{p.price}</td>
@@ -198,7 +198,7 @@ export default function Admin() {
               <input className="adm-search" placeholder="search users…" value={userSearch} onChange={e => setUserSearch(e.target.value)} />
             </div>
             <div className="adm-table-wrap">
-              <table className="adm-table">
+              <table className="adm-table users-table">
                 <thead>
                   <tr><th>username</th><th>email</th><th>role</th><th>joined</th><th>change role</th></tr>
                 </thead>
@@ -207,7 +207,7 @@ export default function Admin() {
                     <tr key={u._id}>
                       <td><span className="adm-product-title">{u.username}</span></td>
                       <td className="adm-muted">{u.email}</td>
-                      <td><span className={`adm-badge ${u.role === 'admin' ? 'admin' : ''}`}>{u.role}</span></td>
+                      <td><span className={`adm-badge ${u.role === 'admin' ? 'admin' : 'user'}`}>{u.role}</span></td>
                       <td className="adm-muted">{new Date(u.createdAt).toLocaleDateString()}</td>
                       <td>
                         {u._id === user._id ? (
@@ -241,7 +241,7 @@ export default function Admin() {
               <input className="adm-search" placeholder="search by user or order id…" value={orderSearch} onChange={e => setOrderSearch(e.target.value)} />
             </div>
             <div className="adm-table-wrap">
-              <table className="adm-table">
+              <table className="adm-table orders-table">
                 <thead>
                   <tr><th>order id</th><th>user</th><th>amount</th><th>date</th><th>items</th></tr>
                 </thead>
