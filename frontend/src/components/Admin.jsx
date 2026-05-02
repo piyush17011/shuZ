@@ -1,180 +1,383 @@
-/* eslint-disable jsx-a11y/anchor-is-valid */
-import React from 'react'
-import 'bootstrap/dist/css/bootstrap.min.css';
-import FloatingLabel from 'react-bootstrap/FloatingLabel';
-import Form from 'react-bootstrap/Form';
-import Button from 'react-bootstrap/Button';
-import '../styles/SignUp_Login.css';
-import { useState } from 'react';
+import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import NavBar from './NavBar';
+import { AuthContext } from '../auth/AuthContext';
+import '../styles/Admin.css';
 
-function Admin(){
+const API = process.env.REACT_APP_API_URL;
+const CATEGORIES = ['men', 'women', 'kids', 'ts'];
 
-  
+const emptyProduct = { title: '', imageURL: '', price: '', category: 'men', details: '' };
 
+export default function Admin() {
+  const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
 
-    const navigate = useNavigate(); 
+  // gate: must be admin
+  useEffect(() => {
+    if (!user || user.role !== 'admin') {
+      navigate('/');
+    }
+  }, [user, navigate]);
 
-    const handleHomeClick = () => {
-      navigate('/'); // Navigate to "/signup" route
-    };
+  const [tab, setTab] = useState('products');
+  const token = localStorage.getItem('token') || user?.token;
 
-    //to update user details state on every change
-    // const[users,setUsers] = useState([]);
-    const[product,setProduct] = useState({
-      title : "",
-      imageURL : "",
-      price:"",
-      category:"",
-      details:"",
-    })
-  
-    function handleInput(e){
-      // console.log(e);
-      // console.log(e.target.value);
-      let name = e.target.name;
-      let value = e.target.value;
-      setProduct({
-        ...product,
-        [name] : value,   //using name in []=> dynamic coz it can be anything like username,title,pass
-      });
-      // console.log(user);
-    };
-  
-    const handleSubmit = async (e) =>{
-      e.preventDefault();
-    //   e.stopPropagation();
-      console.log(product);
-    try{
-  
-      const response = await  axios.post(
-        `${process.env.REACT_APP_API_URL}/api/products/add`,product );
-      console.log(response); 
-        setProduct({title : "",imageURL : "",price:"",category:"",details:"",});
-        alert("Product Added ")
-        navigate("/")  
-     }
-    
-    catch(error){
-        if (error.response && error.response.status === 401) {
-            alert(error.response.data.message);
-          } // Alert error message
-        }
+  // ── Products ──────────────────────────────────────────────────
+  const [products, setProducts] = useState([]);
+  const [productForm, setProductForm] = useState(emptyProduct);
+  const [editingProduct, setEditingProduct] = useState(null); // id or null
+  const [productModal, setProductModal] = useState(false);
+  const [productSearch, setProductSearch] = useState('');
+
+  const fetchProducts = useCallback(async () => {
+    try {
+      const { data } = await axios.get(`${API}/api/products/get`);
+      setProducts(data);
+    } catch {}
+  }, []);
+
+  useEffect(() => { fetchProducts(); }, [fetchProducts]);
+
+  const openAddProduct = () => {
+    setProductForm(emptyProduct);
+    setEditingProduct(null);
+    setProductModal(true);
+  };
+
+  const openEditProduct = (p) => {
+    setProductForm({ title: p.title, imageURL: p.imageURL, price: p.price, category: p.category, details: p.details });
+    setEditingProduct(p._id);
+    setProductModal(true);
+  };
+
+  const handleProductSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      if (editingProduct) {
+        await axios.put(`${API}/api/products/update/${editingProduct}`, productForm, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+      } else {
+        await axios.post(`${API}/api/products/add`, productForm, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
       }
-    
-      // useEffect(() => {
-      //   const fetchdata = async () => {
-      //     try {
-      //       const { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/users/allUser");
-      //       console.log(data)
-      //       setUsers(data);
-      //     } catch (error) {
-      //       console.error("Error fetching products:", error);
-      //     }
-      //   };
-      //   fetchdata();
-      // }, []);
+      setProductModal(false);
+      fetchProducts();
+    } catch (err) {
+      alert(err.response?.data?.message || 'Failed to save product');
+    }
+  };
 
-    return(
-      <>
-        <div className='admin'>
-        <center className='login-text'><h1 >Admin</h1></center>
- 
-        <form onSubmit={handleSubmit }>
+  const handleDeleteProduct = async (id) => {
+    if (!window.confirm('Delete this product?')) return;
+    try {
+      await axios.delete(`${API}/api/products/delete/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      fetchProducts();
+    } catch (err) {
+      alert(err.response?.data?.message || 'Failed to delete');
+    }
+  };
 
-         <FloatingLabel
-        
-         label="title "
-         className="mb-3 pass-field">
-         <Form.Control type="text" 
-                       placeholder="name@example.com"
-                       name ='title'
-                       id='title'
-                       required 
-                       autoComplete='off' 
-                       value={product.title}
-                       onChange={handleInput} />
-         <br></br>
-       </FloatingLabel>
-       <FloatingLabel label="imageURL" className='pass-field'>
-         <Form.Control type="text" 
-                       name='imageURL'
-                       placeholder="imageURL"
-                       id='imageURL'
-                       required 
-                       autoComplete='off' 
-                       value={product.imageURL}
-                       onChange={handleInput} />
-       </FloatingLabel>
-       <FloatingLabel label="price" className='pass-field'>
-         <Form.Control type="number" 
-                       name='price'
-                       placeholder="price"details                id='price'
-                       required 
-                       autoComplete='off' 
-                       value={product.price}
-                       onChange={handleInput} />
-       </FloatingLabel>
-       <FloatingLabel label="category " className='pass-field'>
-         <Form.Control type="text" 
-                       name='category'
-                       placeholder="category"details                id='category'
-                       required 
-                       autoComplete='off' 
-                       value={product.category}
-                       onChange={handleInput} />
-       </FloatingLabel>
-       <FloatingLabel label="details" className='pass-field'>
-         <Form.Control type="text" 
-                       name='details'
-                       placeholder="details"
-                       id='details'
-                       required 
-                       autoComplete='off' 
-                       value={product.details}
-                       onChange={handleInput} />
-       </FloatingLabel>
-       <Button  className='signup-button' variant="info" type="submit">Add </Button>
-       </form>
-        <center className='bottom-login-text'>
-        Check Products
-        <a onClick={handleHomeClick} className=''> Home Page!</a>
-        </center>
-        </div>
-{/* 
-        <div className='allUsers'>
-        <h2>All Users</h2>
-        {users.map(user => (
-          <div key={user._id} className='user'>
-            <h3>{user.username} ({user.email})</h3>
-            <h4>Orders:</h4>
-            {user.orders.length > 0 ? (
-              <ul>
-                {user.orders.map(order => (
-                  <li key={order._id}>
-                    <p>Order ID: {order._id}</p>
-                    <p>Amount: Rs.{order.amount}</p>
-                    <p>Order Date: {new Date(order.createdAt).toLocaleDateString()}</p>
-                    <ul>
-                      {order.orderItems.map(item => (
-                        <li key={item._id}>
-                          {item.product.title} - Quantity: {item.quantity}
-                        </li>
-                      ))}
-                    </ul>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p>No orders found.</p>
-            )}
+  const filteredProducts = products.filter(p =>
+    p.title?.toLowerCase().includes(productSearch.toLowerCase()) ||
+    p.category?.toLowerCase().includes(productSearch.toLowerCase())
+  );
+
+  // ── Users ─────────────────────────────────────────────────────
+  const [users, setUsers] = useState([]);
+  const [userSearch, setUserSearch] = useState('');
+  const [roleLoading, setRoleLoading] = useState(null);
+
+  const fetchUsers = useCallback(async () => {
+    try {
+      const { data } = await axios.get(`${API}/api/users/allUser`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setUsers(data.users || []);
+    } catch {}
+  }, [token]);
+
+  useEffect(() => { if (tab === 'users') fetchUsers(); }, [tab, fetchUsers]);
+
+  const handleRoleChange = async (userId, newRole) => {
+    setRoleLoading(userId);
+    try {
+      await axios.patch(`${API}/api/users/role`, { userId, role: newRole }, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      fetchUsers();
+    } catch (err) {
+      alert(err.response?.data?.message || 'Failed to update role');
+    } finally {
+      setRoleLoading(null);
+    }
+  };
+
+  const filteredUsers = users.filter(u =>
+    u.username?.toLowerCase().includes(userSearch.toLowerCase()) ||
+    u.email?.toLowerCase().includes(userSearch.toLowerCase())
+  );
+
+  // ── Orders ────────────────────────────────────────────────────
+  const [orders, setOrders] = useState([]);
+  const [orderSearch, setOrderSearch] = useState('');
+  const [expandedOrder, setExpandedOrder] = useState(null);
+
+  const fetchOrders = useCallback(async () => {
+    try {
+      const { data } = await axios.get(`${API}/api/orders/allorder`);
+      setOrders(data);
+    } catch {}
+  }, []);
+
+  useEffect(() => { if (tab === 'orders') fetchOrders(); }, [tab, fetchOrders]);
+
+  const filteredOrders = orders.filter(o => {
+    const name = o.userId?.[0]?.username || o.userId?.username || '';
+    const email = o.userId?.[0]?.email || o.userId?.email || '';
+    return name.toLowerCase().includes(orderSearch.toLowerCase()) ||
+      email.toLowerCase().includes(orderSearch.toLowerCase()) ||
+      o._id?.toLowerCase().includes(orderSearch.toLowerCase());
+  });
+
+  // ── Render ────────────────────────────────────────────────────
+  if (!user || user.role !== 'admin') return null;
+
+  return (
+    <div className="adm-root">
+      <NavBar />
+      <div className="adm-wrap">
+
+        {/* Header */}
+        <div className="adm-header">
+          <div>
+            <p className="adm-label">dashboard</p>
+            <h1 className="adm-title">admin panel</h1>
           </div>
-        ))}
-      </div> */}
-        </>
-    );
+          <div className="adm-stats-row">
+            <div className="adm-stat"><span className="adm-stat-num">{products.length}</span><span className="adm-stat-lbl">products</span></div>
+            <div className="adm-stat"><span className="adm-stat-num">{users.length || '—'}</span><span className="adm-stat-lbl">users</span></div>
+            <div className="adm-stat"><span className="adm-stat-num">{orders.length || '—'}</span><span className="adm-stat-lbl">orders</span></div>
+          </div>
+        </div>
+
+        {/* Tabs */}
+        <div className="adm-tabs">
+          {['products', 'users', 'orders'].map(t => (
+            <button key={t} className={`adm-tab ${tab === t ? 'active' : ''}`} onClick={() => setTab(t)}>{t}</button>
+          ))}
+        </div>
+
+        {/* ── PRODUCTS TAB ── */}
+        {tab === 'products' && (
+          <div className="adm-section">
+            <div className="adm-section-top">
+              <input className="adm-search" placeholder="search products…" value={productSearch} onChange={e => setProductSearch(e.target.value)} />
+              <button className="adm-btn-primary" onClick={openAddProduct}>+ add product</button>
+            </div>
+            <div className="adm-table-wrap">
+              <table className="adm-table">
+                <thead>
+                  <tr>
+                    <th>image</th>
+                    <th>title</th>
+                    <th>category</th>
+                    <th>price</th>
+                    <th>actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredProducts.map(p => (
+                    <tr key={p._id}>
+                      <td><img src={p.imageURL} alt={p.title} className="adm-product-thumb" /></td>
+                      <td><span className="adm-product-title">{p.title}</span></td>
+                      <td><span className="adm-badge">{p.category}</span></td>
+                      <td>₹{p.price}</td>
+                      <td>
+                        <div className="adm-action-row">
+                          <button className="adm-btn-sm" onClick={() => openEditProduct(p)}>edit</button>
+                          <button className="adm-btn-sm danger" onClick={() => handleDeleteProduct(p._id)}>delete</button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                  {filteredProducts.length === 0 && (
+                    <tr><td colSpan={5} className="adm-empty">no products found</td></tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        {/* ── USERS TAB ── */}
+        {tab === 'users' && (
+          <div className="adm-section">
+            <div className="adm-section-top">
+              <input className="adm-search" placeholder="search users…" value={userSearch} onChange={e => setUserSearch(e.target.value)} />
+            </div>
+            <div className="adm-table-wrap">
+              <table className="adm-table">
+                <thead>
+                  <tr>
+                    <th>username</th>
+                    <th>email</th>
+                    <th>role</th>
+                    <th>joined</th>
+                    <th>change role</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredUsers.map(u => (
+                    <tr key={u._id}>
+                      <td><span className="adm-product-title">{u.username}</span></td>
+                      <td className="adm-muted">{u.email}</td>
+                      <td>
+                        <span className={`adm-badge ${u.role === 'admin' ? 'admin' : ''}`}>{u.role}</span>
+                      </td>
+                      <td className="adm-muted">{new Date(u.createdAt).toLocaleDateString()}</td>
+                      <td>
+                        {u._id === user._id ? (
+                          <span className="adm-muted" style={{ fontSize: '0.75rem' }}>you</span>
+                        ) : (
+                          <div className="adm-action-row">
+                            <button
+                              className={`adm-btn-sm ${u.role === 'admin' ? 'danger' : ''}`}
+                              disabled={roleLoading === u._id}
+                              onClick={() => handleRoleChange(u._id, u.role === 'admin' ? 'user' : 'admin')}
+                            >
+                              {roleLoading === u._id ? '…' : u.role === 'admin' ? 'demote' : 'make admin'}
+                            </button>
+                          </div>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                  {filteredUsers.length === 0 && (
+                    <tr><td colSpan={5} className="adm-empty">no users found</td></tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        {/* ── ORDERS TAB ── */}
+        {tab === 'orders' && (
+          <div className="adm-section">
+            <div className="adm-section-top">
+              <input className="adm-search" placeholder="search by user or order id…" value={orderSearch} onChange={e => setOrderSearch(e.target.value)} />
+            </div>
+            <div className="adm-table-wrap">
+              <table className="adm-table">
+                <thead>
+                  <tr>
+                    <th>order id</th>
+                    <th>user</th>
+                    <th>amount</th>
+                    <th>date</th>
+                    <th>items</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredOrders.map(o => {
+                    const u = Array.isArray(o.userId) ? o.userId[0] : o.userId;
+                    const isOpen = expandedOrder === o._id;
+                    return (
+                      <React.Fragment key={o._id}>
+                        <tr>
+                          <td className="adm-muted" style={{ fontSize: '0.72rem', fontFamily: 'monospace' }}>{o._id?.slice(-8)}</td>
+                          <td>
+                            <div><span className="adm-product-title">{u?.username || 'unknown'}</span></div>
+                            <div className="adm-muted" style={{ fontSize: '0.75rem' }}>{u?.email || ''}</div>
+                          </td>
+                          <td>₹{o.amount}</td>
+                          <td className="adm-muted">{new Date(o.createdAt).toLocaleDateString()}</td>
+                          <td>
+                            <button className="adm-btn-sm" onClick={() => setExpandedOrder(isOpen ? null : o._id)}>
+                              {isOpen ? 'hide' : `${o.orderItems?.length || 0} items`}
+                            </button>
+                          </td>
+                        </tr>
+                        {isOpen && (
+                          <tr className="adm-expanded-row">
+                            <td colSpan={5}>
+                              <div className="adm-order-items">
+                                {o.orderItems?.map((item, i) => (
+                                  <div key={i} className="adm-order-item">
+                                    <span className="adm-product-title">{item.product?.title || item.product}</span>
+                                    <span className="adm-badge">×{item.quantity}</span>
+                                    {item.product?.price && <span className="adm-muted">₹{item.product.price}</span>}
+                                  </div>
+                                ))}
+                              </div>
+                            </td>
+                          </tr>
+                        )}
+                      </React.Fragment>
+                    );
+                  })}
+                  {filteredOrders.length === 0 && (
+                    <tr><td colSpan={5} className="adm-empty">no orders found</td></tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* ── Product Modal ── */}
+      {productModal && (
+        <div className="adm-modal-overlay" onClick={() => setProductModal(false)}>
+          <div className="adm-modal" onClick={e => e.stopPropagation()}>
+            <div className="adm-modal-header">
+              <h2 className="adm-modal-title">{editingProduct ? 'edit product' : 'add product'}</h2>
+              <button className="adm-modal-close" onClick={() => setProductModal(false)}>✕</button>
+            </div>
+            <form onSubmit={handleProductSubmit} className="adm-form">
+              <div className="adm-field">
+                <label>title</label>
+                <input required value={productForm.title} onChange={e => setProductForm({ ...productForm, title: e.target.value })} placeholder="Nike Air Max…" />
+              </div>
+              <div className="adm-field">
+                <label>image url</label>
+                <input required value={productForm.imageURL} onChange={e => setProductForm({ ...productForm, imageURL: e.target.value })} placeholder="https://…" />
+              </div>
+              <div className="adm-field-row">
+                <div className="adm-field">
+                  <label>price (₹)</label>
+                  <input required type="number" min="0" value={productForm.price} onChange={e => setProductForm({ ...productForm, price: e.target.value })} placeholder="2999" />
+                </div>
+                <div className="adm-field">
+                  <label>category</label>
+                  <select value={productForm.category} onChange={e => setProductForm({ ...productForm, category: e.target.value })}>
+                    {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+                  </select>
+                </div>
+              </div>
+              <div className="adm-field">
+                <label>details</label>
+                <textarea required rows={3} value={productForm.details} onChange={e => setProductForm({ ...productForm, details: e.target.value })} placeholder="Product description…" />
+              </div>
+              {productForm.imageURL && (
+                <div className="adm-preview">
+                  <img src={productForm.imageURL} alt="preview" />
+                </div>
+              )}
+              <div className="adm-modal-footer">
+                <button type="button" className="adm-btn-ghost" onClick={() => setProductModal(false)}>cancel</button>
+                <button type="submit" className="adm-btn-primary">{editingProduct ? 'save changes' : 'add product'}</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+    </div>
+  );
 }
-
-
-export default Admin

@@ -1,13 +1,14 @@
-const jwt = require("jsonwebtoken");
+const jwt = require('jsonwebtoken');
+const User = require('../model/userModel');
 
-const SECRET_KEY = process.env.JWT_SECRET || "Piyush@17";
+const SECRET_KEY = process.env.JWT_SECRET || 'Piyush@17';
 
 const authenticateToken = (req, res, next) => {
-  const authHeader = req.headers["authorization"];
-  const token = authHeader && authHeader.split(" ")[1];
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
 
   if (!token) {
-    return res.status(401).json({ message: "Authentication required" });
+    return res.status(401).json({ message: 'Authentication required' });
   }
 
   try {
@@ -15,9 +16,21 @@ const authenticateToken = (req, res, next) => {
     req.user = decoded;
     next();
   } catch (err) {
-    return res.status(401).json({ message: "Invalid or expired token" });
+    return res.status(401).json({ message: 'Invalid or expired token' });
   }
 };
 
-module.exports = authenticateToken;
+// Must be used AFTER authenticateToken
+const isAdmin = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user.id);
+    if (!user || user.role !== 'admin') {
+      return res.status(403).json({ message: 'Admin access required' });
+    }
+    next();
+  } catch (err) {
+    return res.status(500).json({ message: 'Server error' });
+  }
+};
 
+module.exports = { authenticateToken, isAdmin };

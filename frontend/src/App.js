@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 import { useContext } from 'react';
 import { AuthContext } from './auth/AuthContext';
 
-// ❌ ShoeModel3D removed from here — it lives inside Hero.jsx only
 import SignUp from './components/SignUp';
 import LogIn from './components/LogIn';
 import About from './components/About';
@@ -24,6 +23,12 @@ function App() {
     return children;
   };
 
+  const AdminRoute = ({ children }) => {
+    if (!user) return <Navigate to="/login" replace />;
+    if (user.role !== 'admin') return <Navigate to="/" replace />;
+    return children;
+  };
+
   return (
     <Router>
       <div className="app">
@@ -32,7 +37,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/login" element={<LogIn />} />
-            <Route path="/admin" element={<Admin />} />
+            <Route path="/admin" element={<AdminRoute><Admin /></AdminRoute>} />
             <Route path="/men" element={<Category category={"men"} />} />
             <Route path="/women" element={<Category category={"women"} />} />
             <Route path="/kids" element={<Category category={"kids"} />} />
