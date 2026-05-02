@@ -69,7 +69,7 @@ const NavBar = () => {
         </Link>
 
         {/* admin */}
-        {user?.email === "admin@admin.com" && (
+        {user?.role === "admin" && (
           <Link to="/admin" className="nav-text" style={{padding:'0.45rem 0.75rem'}}>
             <RiAdminLine className="cart-icon" />
           </Link>
