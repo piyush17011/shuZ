@@ -19,32 +19,13 @@ const normalizeUser = (rawUser) => {
 const AuthReducer = (state, action) => {
   switch (action.type) {
     case "LOGIN_START":
-      return {
-        ...state,
-        loading: true,
-        error: null,
-      };
+      return { ...state, loading: true, error: null };
     case "LOGIN_SUCCESS":
-      return {
-        ...state,
-        user: normalizeUser(action.payload),
-        loading: false,
-        error: null,
-      };
+      return { ...state, user: normalizeUser(action.payload), loading: false, error: null };
     case "LOGIN_FAILURE":
-      return {
-        ...state,
-        user: null,
-        loading: false,
-        error: action.payload,
-      };
+      return { ...state, user: null, loading: false, error: action.payload };
     case "LOGOUT":
-      return {
-        ...state,
-        user: null,
-        loading: false,
-        error: null,
-      };
+      return { ...state, user: null, loading: false, error: null };
     default:
       return state;
   }
@@ -56,12 +37,10 @@ export const AuthContextProvider = ({ children }) => {
   useEffect(() => {
     const savedUser = localStorage.getItem("user");
     if (!savedUser) return;
-
     try {
       const parsedUser = JSON.parse(savedUser);
       dispatch({ type: "LOGIN_SUCCESS", payload: parsedUser });
     } catch (err) {
-      console.error("Failed to parse saved user", err);
       localStorage.removeItem("user");
     }
   }, []);
@@ -71,8 +50,20 @@ export const AuthContextProvider = ({ children }) => {
       localStorage.setItem("user", JSON.stringify(state.user));
     } else {
       localStorage.removeItem("user");
+      localStorage.removeItem("token");
     }
   }, [state.user]);
+
+  // Intercept LOGIN_SUCCESS to also save the token separately
+  const customDispatch = (action) => {
+    if (action.type === "LOGIN_SUCCESS" && action.payload?.token) {
+      localStorage.setItem("token", action.payload.token);
+    }
+    if (action.type === "LOGOUT") {
+      localStorage.removeItem("token");
+    }
+    dispatch(action);
+  };
 
   return (
     <AuthContext.Provider
@@ -80,7 +71,7 @@ export const AuthContextProvider = ({ children }) => {
         user: state.user,
         loading: state.loading,
         error: state.error,
-        dispatch,
+        dispatch: customDispatch,
       }}
     >
       {children}
