@@ -7,7 +7,8 @@ const {
   updateProduct,
   deleteProduct,
 } = require('../controller/productController');
-const { authenticateToken, isAdmin } = require('../middleware/authMiddleware');
+const authenticateToken = require('../middleware/authMiddleware');
+const { isAdmin } = require('../middleware/authMiddleware');
 
 const router = express.Router();
 

@@ -33,4 +33,6 @@ const isAdmin = async (req, res, next) => {
   }
 };
 
-module.exports = { authenticateToken, isAdmin };
+module.exports = authenticateToken;                   // default — existing routes unchanged
+module.exports.isAdmin = isAdmin;                     // named — admin-only routes
+module.exports.authenticateToken = authenticateToken; // named alias
