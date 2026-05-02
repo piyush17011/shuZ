@@ -8,14 +8,11 @@ import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
   const navigate = useNavigate();
-
   return (
     <div style={{ background: '#000', minHeight: '100vh' }}>
       <NavBar />
       <Hero />
       <Cards />
-
-      {/* ── TOP SELLING SECTION ── */}
       <section className="ts-section">
         <div className="ts-header">
           <div>
@@ -26,9 +23,9 @@ const Home = () => {
             view all →
           </button>
         </div>
-        <TopSellingItems category="men" />
+        {/* No category prop — shows all products across men, women, kids, ts */}
+        <TopSellingItems />
       </section>
-
       <Footer />
     </div>
   );

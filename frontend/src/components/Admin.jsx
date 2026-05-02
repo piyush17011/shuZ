@@ -6,35 +6,26 @@ import { AuthContext } from '../auth/AuthContext';
 import '../styles/Admin.css';
 
 const API = process.env.REACT_APP_API_URL;
-const CATEGORIES = ['men', 'women', 'kids', 'ts'];
+const CATEGORIES = ['men', 'women', 'kids'];
 
-const emptyProduct = { title: '', imageURL: '', price: '', category: 'men', details: '' };
+const emptyProduct = { title: '', imageURL: '', price: '', category: 'men', ts: false, details: '' };
 
 export default function Admin() {
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!user || user.role !== 'admin') {
-      navigate('/');
-    }
+    if (!user || user.role !== 'admin') navigate('/');
   }, [user, navigate]);
 
   const [tab, setTab] = useState('products');
 
-  // Robust token extraction — covers all storage patterns
   const token =
     localStorage.getItem('token') ||
     user?.token ||
-    (() => {
-      try {
-        return JSON.parse(localStorage.getItem('user'))?.token;
-      } catch {
-        return null;
-      }
-    })();
+    (() => { try { return JSON.parse(localStorage.getItem('user'))?.token; } catch { return null; } })();
 
-  // ─── PRODUCTS ───────────────────────────────────────────────
+  // PRODUCTS
   const [products, setProducts] = useState([]);
   const [productForm, setProductForm] = useState(emptyProduct);
   const [editingProduct, setEditingProduct] = useState(null);
@@ -42,22 +33,13 @@ export default function Admin() {
   const [productSearch, setProductSearch] = useState('');
 
   const fetchProducts = useCallback(async () => {
-    try {
-      const { data } = await axios.get(`${API}/api/products/get`);
-      setProducts(data); // already sorted newest-first by backend
-    } catch {}
+    try { const { data } = await axios.get(`${API}/api/products/get`); setProducts(data); } catch {}
   }, []);
-
   useEffect(() => { fetchProducts(); }, [fetchProducts]);
 
-  const openAddProduct = () => {
-    setProductForm(emptyProduct);
-    setEditingProduct(null);
-    setProductModal(true);
-  };
-
+  const openAddProduct = () => { setProductForm(emptyProduct); setEditingProduct(null); setProductModal(true); };
   const openEditProduct = (p) => {
-    setProductForm({ title: p.title, imageURL: p.imageURL, price: p.price, category: p.category, details: p.details });
+    setProductForm({ title: p.title, imageURL: p.imageURL, price: p.price, category: p.category, ts: p.ts || false, details: p.details });
     setEditingProduct(p._id);
     setProductModal(true);
   };
@@ -66,13 +48,9 @@ export default function Admin() {
     e.preventDefault();
     try {
       if (editingProduct) {
-        await axios.put(`${API}/api/products/update/${editingProduct}`, productForm, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        await axios.put(`${API}/api/products/update/${editingProduct}`, productForm, { headers: { Authorization: `Bearer ${token}` } });
       } else {
-        await axios.post(`${API}/api/products/add`, productForm, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        await axios.post(`${API}/api/products/add`, productForm, { headers: { Authorization: `Bearer ${token}` } });
       }
       setProductModal(false);
       fetchProducts();
@@ -85,13 +63,10 @@ export default function Admin() {
   const handleDeleteProduct = async (id) => {
     if (!window.confirm('Delete this product?')) return;
     try {
-      await axios.delete(`${API}/api/products/delete/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await axios.delete(`${API}/api/products/delete/${id}`, { headers: { Authorization: `Bearer ${token}` } });
       fetchProducts();
     } catch (err) {
-      console.error('Delete failed:', err.response?.status, err.response?.data);
-      alert(err.response?.data?.message || `Failed to delete (status: ${err.response?.status})`);
+      alert(err.response?.data?.message || 'Failed to delete');
     }
   };
 
@@ -100,34 +75,26 @@ export default function Admin() {
     p.category?.toLowerCase().includes(productSearch.toLowerCase())
   );
 
-  // ─── USERS ──────────────────────────────────────────────────
+  // USERS
   const [users, setUsers] = useState([]);
   const [userSearch, setUserSearch] = useState('');
   const [roleLoading, setRoleLoading] = useState(null);
 
   const fetchUsers = useCallback(async () => {
     try {
-      const { data } = await axios.get(`${API}/api/users/allUser`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setUsers(data.users || []); // already sorted newest-first by backend
+      const { data } = await axios.get(`${API}/api/users/allUser`, { headers: { Authorization: `Bearer ${token}` } });
+      setUsers(data.users || []);
     } catch {}
   }, [token]);
-
   useEffect(() => { if (tab === 'users') fetchUsers(); }, [tab, fetchUsers]);
 
   const handleRoleChange = async (userId, newRole) => {
     setRoleLoading(userId);
     try {
-      await axios.patch(`${API}/api/users/role`, { userId, role: newRole }, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await axios.patch(`${API}/api/users/role`, { userId, role: newRole }, { headers: { Authorization: `Bearer ${token}` } });
       fetchUsers();
-    } catch (err) {
-      alert(err.response?.data?.message || 'Failed to update role');
-    } finally {
-      setRoleLoading(null);
-    }
+    } catch (err) { alert(err.response?.data?.message || 'Failed to update role'); }
+    finally { setRoleLoading(null); }
   };
 
   const filteredUsers = users.filter(u =>
@@ -135,18 +102,14 @@ export default function Admin() {
     u.email?.toLowerCase().includes(userSearch.toLowerCase())
   );
 
-  // ─── ORDERS ─────────────────────────────────────────────────
+  // ORDERS
   const [orders, setOrders] = useState([]);
   const [orderSearch, setOrderSearch] = useState('');
   const [expandedOrder, setExpandedOrder] = useState(null);
 
   const fetchOrders = useCallback(async () => {
-    try {
-      const { data } = await axios.get(`${API}/api/orders/allorder`);
-      setOrders(data); // already sorted newest-first by backend
-    } catch {}
+    try { const { data } = await axios.get(`${API}/api/orders/allorder`); setOrders(data); } catch {}
   }, []);
-
   useEffect(() => { if (tab === 'orders') fetchOrders(); }, [tab, fetchOrders]);
 
   const filteredOrders = orders.filter(o => {
@@ -164,7 +127,6 @@ export default function Admin() {
       <NavBar />
       <div className="adm-wrap">
 
-        {/* HEADER */}
         <div className="adm-header">
           <div>
             <p className="adm-label">dashboard</p>
@@ -177,14 +139,12 @@ export default function Admin() {
           </div>
         </div>
 
-        {/* TABS */}
         <div className="adm-tabs">
           {['products', 'users', 'orders'].map(t => (
             <button key={t} className={`adm-tab ${tab === t ? 'active' : ''}`} onClick={() => setTab(t)}>{t}</button>
           ))}
         </div>
 
-        {/* PRODUCTS TAB */}
         {tab === 'products' && (
           <div className="adm-section">
             <div className="adm-section-top">
@@ -198,6 +158,7 @@ export default function Admin() {
                     <th>image</th>
                     <th>title</th>
                     <th>category</th>
+                    <th>top selling</th>
                     <th>price</th>
                     <th>actions</th>
                   </tr>
@@ -208,6 +169,11 @@ export default function Admin() {
                       <td><img src={p.imageURL} alt={p.title} className="adm-product-thumb" /></td>
                       <td><span className="adm-product-title">{p.title}</span></td>
                       <td><span className="adm-badge">{p.category}</span></td>
+                      <td>
+                        {p.ts
+                          ? <span className="adm-badge admin">✓ ts</span>
+                          : <span className="adm-muted" style={{ fontSize: '0.75rem' }}>—</span>}
+                      </td>
                       <td>₹{p.price}</td>
                       <td>
                         <div className="adm-action-row">
@@ -218,7 +184,7 @@ export default function Admin() {
                     </tr>
                   ))}
                   {filteredProducts.length === 0 && (
-                    <tr><td colSpan={5} className="adm-empty">no products found</td></tr>
+                    <tr><td colSpan={6} className="adm-empty">no products found</td></tr>
                   )}
                 </tbody>
               </table>
@@ -226,7 +192,6 @@ export default function Admin() {
           </div>
         )}
 
-        {/* USERS TAB */}
         {tab === 'users' && (
           <div className="adm-section">
             <div className="adm-section-top">
@@ -235,22 +200,14 @@ export default function Admin() {
             <div className="adm-table-wrap">
               <table className="adm-table">
                 <thead>
-                  <tr>
-                    <th>username</th>
-                    <th>email</th>
-                    <th>role</th>
-                    <th>joined</th>
-                    <th>change role</th>
-                  </tr>
+                  <tr><th>username</th><th>email</th><th>role</th><th>joined</th><th>change role</th></tr>
                 </thead>
                 <tbody>
                   {filteredUsers.map(u => (
                     <tr key={u._id}>
                       <td><span className="adm-product-title">{u.username}</span></td>
                       <td className="adm-muted">{u.email}</td>
-                      <td>
-                        <span className={`adm-badge ${u.role === 'admin' ? 'admin' : ''}`}>{u.role}</span>
-                      </td>
+                      <td><span className={`adm-badge ${u.role === 'admin' ? 'admin' : ''}`}>{u.role}</span></td>
                       <td className="adm-muted">{new Date(u.createdAt).toLocaleDateString()}</td>
                       <td>
                         {u._id === user._id ? (
@@ -278,7 +235,6 @@ export default function Admin() {
           </div>
         )}
 
-        {/* ORDERS TAB */}
         {tab === 'orders' && (
           <div className="adm-section">
             <div className="adm-section-top">
@@ -287,13 +243,7 @@ export default function Admin() {
             <div className="adm-table-wrap">
               <table className="adm-table">
                 <thead>
-                  <tr>
-                    <th>order id</th>
-                    <th>user</th>
-                    <th>amount</th>
-                    <th>date</th>
-                    <th>items</th>
-                  </tr>
+                  <tr><th>order id</th><th>user</th><th>amount</th><th>date</th><th>items</th></tr>
                 </thead>
                 <tbody>
                   {filteredOrders.map(o => {
@@ -321,20 +271,12 @@ export default function Admin() {
                               <div className="adm-order-items">
                                 {o.orderItems?.map((item, i) => (
                                   <div key={i} className="adm-order-item">
-                                    {/* Product image — now populated from backend */}
                                     {item.product?.imageURL && (
                                       <img
                                         src={item.product.imageURL}
                                         alt={item.product?.title || ''}
                                         className="adm-product-thumb"
-                                        style={{
-                                          width: '48px',
-                                          height: '48px',
-                                          objectFit: 'contain',
-                                          borderRadius: '6px',
-                                          background: 'rgba(255,255,255,0.06)',
-                                          flexShrink: 0,
-                                        }}
+                                        style={{ width: '48px', height: '48px', objectFit: 'contain', borderRadius: '6px', background: 'rgba(255,255,255,0.06)', flexShrink: 0 }}
                                       />
                                     )}
                                     <span className="adm-product-title">{item.product?.title || item.product}</span>
@@ -359,7 +301,6 @@ export default function Admin() {
         )}
       </div>
 
-      {/* PRODUCT MODAL */}
       {productModal && (
         <div className="adm-modal-overlay" onClick={() => setProductModal(false)}>
           <div className="adm-modal" onClick={e => e.stopPropagation()}>
@@ -392,6 +333,21 @@ export default function Admin() {
                 <label>details</label>
                 <textarea required rows={3} value={productForm.details} onChange={e => setProductForm({ ...productForm, details: e.target.value })} placeholder="Product description…" />
               </div>
+
+              {/* TOP SELLING CHECKBOX */}
+              <div className="adm-field" style={{ flexDirection: 'row', alignItems: 'center', gap: '0.75rem' }}>
+                <input
+                  type="checkbox"
+                  id="ts-toggle"
+                  checked={productForm.ts}
+                  onChange={e => setProductForm({ ...productForm, ts: e.target.checked })}
+                  style={{ width: '16px', height: '16px', accentColor: '#fff', cursor: 'pointer' }}
+                />
+                <label htmlFor="ts-toggle" style={{ marginBottom: 0, cursor: 'pointer' }}>
+                  mark as top selling <span style={{ color: 'rgba(255,255,255,0.35)', fontSize: '0.78rem' }}>(shows on home page)</span>
+                </label>
+              </div>
+
               {productForm.imageURL && (
                 <div className="adm-preview">
                   <img src={productForm.imageURL} alt="preview" />
