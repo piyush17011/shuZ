@@ -14,7 +14,6 @@ export default function Admin() {
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  // gate: must be admin
   useEffect(() => {
     if (!user || user.role !== 'admin') {
       navigate('/');
@@ -22,19 +21,30 @@ export default function Admin() {
   }, [user, navigate]);
 
   const [tab, setTab] = useState('products');
-  const token = localStorage.getItem('token') || user?.token;
 
-  // ── Products ──────────────────────────────────────────────────
+  // Robust token extraction — covers all storage patterns
+  const token =
+    localStorage.getItem('token') ||
+    user?.token ||
+    (() => {
+      try {
+        return JSON.parse(localStorage.getItem('user'))?.token;
+      } catch {
+        return null;
+      }
+    })();
+
+  // ─── PRODUCTS ───────────────────────────────────────────────
   const [products, setProducts] = useState([]);
   const [productForm, setProductForm] = useState(emptyProduct);
-  const [editingProduct, setEditingProduct] = useState(null); // id or null
+  const [editingProduct, setEditingProduct] = useState(null);
   const [productModal, setProductModal] = useState(false);
   const [productSearch, setProductSearch] = useState('');
 
   const fetchProducts = useCallback(async () => {
     try {
       const { data } = await axios.get(`${API}/api/products/get`);
-      setProducts(data);
+      setProducts(data); // already sorted newest-first by backend
     } catch {}
   }, []);
 
@@ -67,7 +77,8 @@ export default function Admin() {
       setProductModal(false);
       fetchProducts();
     } catch (err) {
-      alert(err.response?.data?.message || 'Failed to save product');
+      console.error('Save failed:', err.response?.status, err.response?.data);
+      alert(err.response?.data?.message || `Failed to save product (status: ${err.response?.status})`);
     }
   };
 
@@ -79,7 +90,8 @@ export default function Admin() {
       });
       fetchProducts();
     } catch (err) {
-      alert(err.response?.data?.message || 'Failed to delete');
+      console.error('Delete failed:', err.response?.status, err.response?.data);
+      alert(err.response?.data?.message || `Failed to delete (status: ${err.response?.status})`);
     }
   };
 
@@ -88,7 +100,7 @@ export default function Admin() {
     p.category?.toLowerCase().includes(productSearch.toLowerCase())
   );
 
-  // ── Users ─────────────────────────────────────────────────────
+  // ─── USERS ──────────────────────────────────────────────────
   const [users, setUsers] = useState([]);
   const [userSearch, setUserSearch] = useState('');
   const [roleLoading, setRoleLoading] = useState(null);
@@ -98,7 +110,7 @@ export default function Admin() {
       const { data } = await axios.get(`${API}/api/users/allUser`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setUsers(data.users || []);
+      setUsers(data.users || []); // already sorted newest-first by backend
     } catch {}
   }, [token]);
 
@@ -123,7 +135,7 @@ export default function Admin() {
     u.email?.toLowerCase().includes(userSearch.toLowerCase())
   );
 
-  // ── Orders ────────────────────────────────────────────────────
+  // ─── ORDERS ─────────────────────────────────────────────────
   const [orders, setOrders] = useState([]);
   const [orderSearch, setOrderSearch] = useState('');
   const [expandedOrder, setExpandedOrder] = useState(null);
@@ -131,7 +143,7 @@ export default function Admin() {
   const fetchOrders = useCallback(async () => {
     try {
       const { data } = await axios.get(`${API}/api/orders/allorder`);
-      setOrders(data);
+      setOrders(data); // already sorted newest-first by backend
     } catch {}
   }, []);
 
@@ -145,7 +157,6 @@ export default function Admin() {
       o._id?.toLowerCase().includes(orderSearch.toLowerCase());
   });
 
-  // ── Render ────────────────────────────────────────────────────
   if (!user || user.role !== 'admin') return null;
 
   return (
@@ -153,7 +164,7 @@ export default function Admin() {
       <NavBar />
       <div className="adm-wrap">
 
-        {/* Header */}
+        {/* HEADER */}
         <div className="adm-header">
           <div>
             <p className="adm-label">dashboard</p>
@@ -166,14 +177,14 @@ export default function Admin() {
           </div>
         </div>
 
-        {/* Tabs */}
+        {/* TABS */}
         <div className="adm-tabs">
           {['products', 'users', 'orders'].map(t => (
             <button key={t} className={`adm-tab ${tab === t ? 'active' : ''}`} onClick={() => setTab(t)}>{t}</button>
           ))}
         </div>
 
-        {/* ── PRODUCTS TAB ── */}
+        {/* PRODUCTS TAB */}
         {tab === 'products' && (
           <div className="adm-section">
             <div className="adm-section-top">
@@ -215,7 +226,7 @@ export default function Admin() {
           </div>
         )}
 
-        {/* ── USERS TAB ── */}
+        {/* USERS TAB */}
         {tab === 'users' && (
           <div className="adm-section">
             <div className="adm-section-top">
@@ -267,7 +278,7 @@ export default function Admin() {
           </div>
         )}
 
-        {/* ── ORDERS TAB ── */}
+        {/* ORDERS TAB */}
         {tab === 'orders' && (
           <div className="adm-section">
             <div className="adm-section-top">
@@ -310,6 +321,22 @@ export default function Admin() {
                               <div className="adm-order-items">
                                 {o.orderItems?.map((item, i) => (
                                   <div key={i} className="adm-order-item">
+                                    {/* Product image — now populated from backend */}
+                                    {item.product?.imageURL && (
+                                      <img
+                                        src={item.product.imageURL}
+                                        alt={item.product?.title || ''}
+                                        className="adm-product-thumb"
+                                        style={{
+                                          width: '48px',
+                                          height: '48px',
+                                          objectFit: 'contain',
+                                          borderRadius: '6px',
+                                          background: 'rgba(255,255,255,0.06)',
+                                          flexShrink: 0,
+                                        }}
+                                      />
+                                    )}
                                     <span className="adm-product-title">{item.product?.title || item.product}</span>
                                     <span className="adm-badge">×{item.quantity}</span>
                                     {item.product?.price && <span className="adm-muted">₹{item.product.price}</span>}
@@ -332,7 +359,7 @@ export default function Admin() {
         )}
       </div>
 
-      {/* ── Product Modal ── */}
+      {/* PRODUCT MODAL */}
       {productModal && (
         <div className="adm-modal-overlay" onClick={() => setProductModal(false)}>
           <div className="adm-modal" onClick={e => e.stopPropagation()}>

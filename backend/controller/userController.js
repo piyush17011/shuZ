@@ -34,7 +34,6 @@ const registerUser = async (req, res) => {
       username: username.trim(),
       email: email.toLowerCase(),
       password: hashedPassword,
-      // role defaults to 'user' via schema
     });
 
     const { password: _password, ...userData } = user.toObject();
@@ -75,14 +74,13 @@ const loginUser = async (req, res) => {
 
 const getUsers = async (req, res) => {
   try {
-    const users = await User.find({}).select('-password');
+    const users = await User.find({}).select('-password').sort({ createdAt: -1 }); // newest first
     return res.status(200).json({ users });
   } catch (err) {
     return res.status(500).json({ message: 'Failed to fetch users' });
   }
 };
 
-// Only an existing admin can call this
 const updateRole = async (req, res) => {
   try {
     const { userId, role } = req.body;

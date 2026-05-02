@@ -13,7 +13,7 @@ const createProduct = async (req, res) => {
 
 const getAllProducts = async (req, res) => {
   try {
-    const products = await Product.find();
+    const products = await Product.find().sort({ createdAt: -1 }); // newest first
     res.json(products);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -23,7 +23,7 @@ const getAllProducts = async (req, res) => {
 const getCategoryProducts = async (req, res) => {
   const cat = req.params.cat;
   try {
-    const products = await Product.find({ category: cat });
+    const products = await Product.find({ category: cat }).sort({ createdAt: -1 }); // newest first
     res.json(products);
   } catch (err) {
     res.status(500).json({ message: err.message });
