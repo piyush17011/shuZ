@@ -1,4 +1,5 @@
 const Product = require('../model/productModel');
+const redis = require('../config/redis');
 
 const createProduct = async (req, res) => {
   const { title, imageURL, price, category, ts, details } = req.body;
