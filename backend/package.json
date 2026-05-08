@@ -18,6 +18,7 @@
     "dotenv": "^17.2.1",
     "express": "^4.19.2",
     "git": "^0.1.5",
+    "ioredis": "^5.10.1",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.23.1",
     "razorpay": "^2.9.6"

@@ -5,6 +5,9 @@ const createProduct = async (req, res) => {
   try {
     const newProduct = new Product({ title, imageURL, price, category, ts: ts || false, details });
     await newProduct.save();
+     // clear products cache
+    await redis.del('products') // ✅ next request gets fresh data
+
     res.status(201).json(newProduct);
   } catch (err) {
     res.status(400).json({ message: err.message });
@@ -13,7 +16,20 @@ const createProduct = async (req, res) => {
 
 const getAllProducts = async (req, res) => {
   try {
+
+     const cached = await redis.get('products')
+    //if has it, directly return 
+   if(cached){
+    console.log("Cached Hit")
+    return res.status(200).json(JSON.parse(cached))    
+   }
+   //else display its empty
+   console.log('Redis cache is empty')
+   
     const products = await Product.find().sort({ createdAt: -1 });
+     //store that in redis
+   await redis.set('products',JSON.stringify(products),'EX',300) //5mins
+
     res.json(products);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -60,6 +76,9 @@ const updateProduct = async (req, res) => {
       { new: true, runValidators: true }
     );
     if (!updated) return res.status(404).json({ message: 'Product not found' });
+     // clear products cache
+    await redis.del('products') // ✅ next request gets fresh data
+
     res.json(updated);
   } catch (err) {
     res.status(400).json({ message: err.message });
@@ -71,6 +90,9 @@ const deleteProduct = async (req, res) => {
   try {
     const deleted = await Product.findByIdAndDelete(id);
     if (!deleted) return res.status(404).json({ message: 'Product not found' });
+     // clear products cache
+    await redis.del('products') // ✅ next request gets fresh data
+
     res.json({ message: 'Product deleted' });
   } catch (err) {
     res.status(500).json({ message: err.message });
