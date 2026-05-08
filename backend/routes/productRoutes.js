@@ -10,11 +10,12 @@ const {
 } = require('../controller/productController');
 const authenticateToken = require('../middleware/authMiddleware');
 const { isAdmin } = require('../middleware/authMiddleware');
+const { generalLimiter } = require('../middleware/rateLimiter');
 
 const router = express.Router();
 
 router.post('/add', authenticateToken, isAdmin, createProduct);
-router.get('/get', getAllProducts);
+router.get('/get',generalLimiter, getAllProducts);
 router.get('/get/ts', getTsProducts);              // top selling products
 router.get('/get/:cat', getCategoryProducts);      // must come AFTER /get/ts
 router.get('/get/single/:id', getSingleProduct);
