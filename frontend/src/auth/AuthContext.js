@@ -50,17 +50,13 @@ export const AuthContextProvider = ({ children }) => {
       localStorage.setItem("user", JSON.stringify(state.user));
     } else {
       localStorage.removeItem("user");
-      localStorage.removeItem("token");
     }
   }, [state.user]);
 
-  // Intercept LOGIN_SUCCESS to also save the token separately
+  // Intercept LOGIN_SUCCESS to remove token from response (now stored in HTTPOnly cookie)
   const customDispatch = (action) => {
-    if (action.type === "LOGIN_SUCCESS" && action.payload?.token) {
-      localStorage.setItem("token", action.payload.token);
-    }
     if (action.type === "LOGOUT") {
-      localStorage.removeItem("token");
+      localStorage.removeItem("user");
     }
     dispatch(action);
   };

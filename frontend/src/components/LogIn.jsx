@@ -36,7 +36,8 @@ function LogIn() {
 
       const response = await axios.post(
         `${process.env.REACT_APP_API_URL}/api/users/login`,
-        user
+        user,
+        { withCredentials: true } // Send cookies with request
       );
 
       dispatch({ type: "LOGIN_SUCCESS", payload: response.data });
@@ -46,6 +47,8 @@ function LogIn() {
 
       if (!err?.response) {
         setError("Cannot connect to server. Please try again.");
+      } else if (err.response.status === 429) {
+        setError("Too many login attempts. Please try again later.");
       } else if (err.response.status === 401) {
         setError("Invalid email or password.");
       } else if (err.response.status === 400) {

@@ -64,9 +64,17 @@ const loginUser = async (req, res) => {
     if (!isPasswordValid) {
       return res.status(401).json({ message: 'Invalid email or password' });
     }
-    const token = jwt.sign({ email: user.email, id: user._id }, SECRET_KEY, { expiresIn: '7d' });
+    const token = jwt.sign({ email: user.email, id: user._id }, SECRET_KEY, { expiresIn: '10m' });
     const { password: _password, ...userData } = user.toObject();
-    return res.status(200).json({ token, data: userData });
+    
+    // Set HTTPOnly cookie with 10-minute expiry
+    res.cookie('token', token, {
+      httpOnly: true,
+      sameSite: 'strict',
+      maxAge: 10 * 60 * 1000 // 10 minutes in milliseconds
+    });
+    
+    return res.status(200).json({ message: 'Login successful', data: userData });
   } catch (err) {
     return res.status(500).json({ message: 'Server error. Please try again later.' });
   }
@@ -101,4 +109,9 @@ const updateRole = async (req, res) => {
   }
 };
 
-module.exports = { registerUser, loginUser, getUsers, updateRole };
+const logoutUser = (req, res) => {
+  res.clearCookie('token');
+  return res.status(200).json({ message: 'Logged out successfully' });
+};
+
+module.exports = { registerUser, loginUser, logoutUser, getUsers, updateRole };

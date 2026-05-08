@@ -5,6 +5,7 @@ import { AuthContext } from '../auth/AuthContext';
 import { RiAdminLine, RiShoppingCartLine } from "react-icons/ri";
 import { GoInbox } from "react-icons/go";
 import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import '../styles/NavBar.css';
 
 const NavBar = () => {
@@ -27,7 +28,15 @@ const NavBar = () => {
   }, [userId]);
 
   const handleLoginClick  = () => navigate('/login');
-  const handleLogoutClick = () => { dispatch({ type: "LOGOUT" }); navigate('/login'); };
+  const handleLogoutClick = async () => { 
+    try {
+      await axios.post(`${process.env.REACT_APP_API_URL}/api/users/logout`, {}, { withCredentials: true });
+    } catch (err) {
+      console.log('Logout error:', err);
+    }
+    dispatch({ type: "LOGOUT" }); 
+    navigate('/login'); 
+  };
 
   return (
     <nav className="main-nav">

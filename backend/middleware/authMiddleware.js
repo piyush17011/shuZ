@@ -4,8 +4,8 @@ const User = require('../model/userModel');
 const SECRET_KEY = process.env.JWT_SECRET || 'Piyush@17';
 
 const authenticateToken = (req, res, next) => {
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];
+  // Get token from HTTPOnly cookie
+  const token = req.cookies.token;
 
   if (!token) {
     return res.status(401).json({ message: 'Authentication required' });

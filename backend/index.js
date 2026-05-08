@@ -7,7 +7,8 @@ const cartRoutes = require('./routes/cartRoutes');
 const paymentRoutes = require('./routes/paymentRoutes');
 const statsRoutes = require('./routes/statsRoutes');
 const cors = require('cors');
-const helmet = require('helmet')
+const helmet = require('helmet');
+const cookieParser = require('cookie-parser');
 const redis = require('./config/redis');
 const { generalLimiter } = require('./middleware/rateLimiter');
 
@@ -38,6 +39,7 @@ app.use(cors({
 
 app.use(helmet());
 app.use(express.json());
+app.use(cookieParser());
 app.use(helmet())        // XSS protection
 app.use(generalLimiter)
 // Routes
