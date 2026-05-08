@@ -22,7 +22,7 @@ const getAllProducts = async (req, res) => {
     //if has it, directly return 
    if(cached){
     console.log("Cached Hit")
-    return res.status(200).json(JSON.parse(cached))    
+    return res.status(200).set('X-Cache', 'HIT').json(JSON.parse(cached))    
    }
    //else display its empty
    console.log('Redis cache is empty')
@@ -31,7 +31,7 @@ const getAllProducts = async (req, res) => {
      //store that in redis
    await redis.set('products',JSON.stringify(products),'EX',300) //5mins
 
-    res.json(products);
+    res.status(200).set('X-Cache', 'MISS').json(products);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
