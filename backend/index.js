@@ -9,6 +9,8 @@ const statsRoutes = require('./routes/statsRoutes');
 const cors = require('cors');
 const helmet = require('helmet')
 const redis = require('./config/redis');
+const { generalLimiter } = require('./middleware/rateLimiter');
+
 
 const app = express();
 
