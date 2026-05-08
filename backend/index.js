@@ -7,6 +7,7 @@ const cartRoutes = require('./routes/cartRoutes');
 const paymentRoutes = require('./routes/paymentRoutes');
 const statsRoutes = require('./routes/statsRoutes');
 const cors = require('cors');
+const redis = require('./config/redis');
 
 const app = express();
 
