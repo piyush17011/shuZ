@@ -48,7 +48,14 @@ function LogIn() {
       if (!err?.response) {
         setError("Cannot connect to server. Please try again.");
       } else if (err.response.status === 429) {
-        setError("Too many login attempts. Please try again later.");
+        // Extract remaining attempts and display it
+        const remaining = err.response.data?.remaining ?? 0;
+        const resetTime = err.response.data?.resetTime ? new Date(err.response.data.resetTime).toLocaleTimeString() : "later";
+        setError(
+          remaining > 0 
+            ? `Too many login attempts. You have ${remaining} attempt${remaining !== 1 ? 's' : ''} remaining. Try again at ${resetTime}`
+            : `Too many login attempts. Try again at ${resetTime}`
+        );
       } else if (err.response.status === 401) {
         setError("Invalid email or password.");
       } else if (err.response.status === 400) {

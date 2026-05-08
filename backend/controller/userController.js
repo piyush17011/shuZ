@@ -64,14 +64,14 @@ const loginUser = async (req, res) => {
     if (!isPasswordValid) {
       return res.status(401).json({ message: 'Invalid email or password' });
     }
-    const token = jwt.sign({ email: user.email, id: user._id }, SECRET_KEY, { expiresIn: '10m' });
+    const token = jwt.sign({ email: user.email, id: user._id }, SECRET_KEY, { expiresIn: '30m' });
     const { password: _password, ...userData } = user.toObject();
     
-    // Set HTTPOnly cookie with 10-minute expiry
+    // Set HTTPOnly cookie with 30-minute expiry
     res.cookie('token', token, {
       httpOnly: true,
       sameSite: 'strict',
-      maxAge: 10 * 60 * 1000 // 10 minutes in milliseconds
+      maxAge: 30 * 60 * 1000 // 30 minutes in milliseconds
     });
     
     return res.status(200).json({ message: 'Login successful', data: userData });

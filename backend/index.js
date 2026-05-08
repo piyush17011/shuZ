@@ -40,7 +40,6 @@ app.use(cors({
 app.use(helmet());
 app.use(express.json());
 app.use(cookieParser());
-app.use(helmet())        // XSS protection
 app.use(generalLimiter)
 // Routes
 app.use("/api/users", userRoutes);
