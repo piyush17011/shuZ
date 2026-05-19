@@ -22,9 +22,9 @@ const Hero = () => {
           const data = await response.json();
           console.log('Stats fetched successfully:', data);
           setStats({
-            happyCustomers: data.happyCustomers || '+12k',
-            pairsShipped: data.pairsShipped || '+80k',
-            stylesAvailable: data.stylesAvailable || '+500',
+            happyCustomers: data.happyCustomers || '',
+            pairsShipped: data.pairsShipped || '',
+            stylesAvailable: data.stylesAvailable || '',
           });
         } else {
           console.warn('Stats API returned non-ok status:', response.status);
