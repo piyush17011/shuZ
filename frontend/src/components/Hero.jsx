@@ -7,9 +7,9 @@ import '../styles/Hero.css';
 const Hero = () => {
   const navigate = useNavigate();
   const [stats, setStats] = useState({
-    happyCustomers: '+12k',
-    pairsShipped: '+80k',
-    stylesAvailable: '+500',
+    happyCustomers: '',
+    pairsShipped: '',
+    stylesAvailable: '',
   });
 
   useEffect(() => {
