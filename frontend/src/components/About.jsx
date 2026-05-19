@@ -67,7 +67,7 @@ const About = () => {
 
         <h2 className="about-heading" style={{ fontSize: 'clamp(1.5rem,3vw,2.2rem)', marginBottom: '1rem' }}>the builder</h2>
         <p className="about-content">
-          Built by Piyush17011 
+          Piyush17011 
           Github : https://github.com/piyush17011
         </p>
       </div>
